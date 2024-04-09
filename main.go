@@ -9,9 +9,14 @@ import (
 )
 
 func main() {
+	// * Echo instance
 	e := echo.New()
+
+	// * Configurations
 	configs.Init()
 	database.Init()
 	routes.InitRoute(e)
+
+	// * Start server
 	e.Logger.Fatal(e.Start(":1323"))
 }
