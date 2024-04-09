@@ -10,7 +10,8 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-// SECTION - Create - Create
+// SECTION - Create
+// NOTE - Create a single user
 func CreateUser(ctx echo.Context) error {
 	userModelHelper := userModel.UserModelHelper{DB: database.DBMYSQL}
 	now := time.Now()
@@ -29,9 +30,35 @@ func CreateUser(ctx echo.Context) error {
 	return ctx.JSON(200, map[string]interface{}{"massage": "Create user success", "user": users})
 }
 
-//!SECTION
+// NOTE - Create a multiple user
+func CreateMultipleUsers(ctx echo.Context) error {
+	userModelHelper := userModel.UserModelHelper{DB: database.DBMYSQL}
+	now := time.Now()
+	// * ANCHOR - การดึงเอาข้อมูลจาก Body มาใส่ตัวแปล
+	data := []userModel.User{}
+	err := ctx.Bind(&data)
+	if err != nil {
+		return ctx.JSON(500, map[string]interface{}{"massage": "Invalid request body"})
+	}
 
-// SECTION - Get
+	users := []*userModel.User{}
+	for _, item := range data {
+		item.Id = helper.GenerateUUID()
+		item.CreatedAt = &now
+		item.UpdatedAt = &now
+		users = append(users, &item)
+	}
+	err = userModelHelper.InsertMultiple(users)
+	if err != nil {
+		return ctx.JSON(500, map[string]interface{}{"massage": "Invalid request body"})
+	}
+	//log.Print(data)
+	return ctx.JSON(200, map[string]interface{}{"massage": "Create user success"})
+}
+
+//!SECTION - Create
+
+// SECTION - Read
 
 // NOTE - Fetch user ทั้งหมดแบบไม่เพิ่มเติม
 // func GetUsers(c echo.Context) error {
@@ -50,18 +77,21 @@ func GetUsersPaginated(ctx echo.Context) error {
 		Row:  5,
 		Page: 1,
 	}
+	filter := &helper.Filter{}
 
 	// * ANCHOR การดึงเอา QueryParam มาใส่ตัวแปล
 	err := echo.QueryParamsBinder(ctx).
 		Int("row", &pagination.Row).
 		Int("page", &pagination.Page).
 		String("sort", &pagination.Sort).
+		String("firstname", &filter.Firstname).
+		String("lastname", &filter.Lastname).
 		BindError()
 	if err != nil {
 		return ctx.JSON(400, map[string]interface{}{"massage": err.Error()})
 	}
 
-	users, err := userModelHelper.GetAllUsersPaginated(pagination)
+	users, err := userModelHelper.GetAllUsersPaginated(pagination, filter)
 	if err != nil {
 		log.Println("Error get user: ", err)
 		return ctx.JSON(500, map[string]string{"message": "Server Error"})
@@ -69,7 +99,39 @@ func GetUsersPaginated(ctx echo.Context) error {
 	return ctx.JSON(200, map[string]interface{}{"data": users, "pagination": pagination, "message": "success"})
 }
 
-//!SECTION
+//!SECTION - Read
+
+// SECTION - Update
+func UpdateById(ctx echo.Context) error {
+	userModelHelper := userModel.UserModelHelper{DB: database.DBMYSQL}
+	id := ctx.Param("id")
+	fields := userModel.UserUpdate{}
+	err := ctx.Bind(&fields)
+	if err != nil {
+		return ctx.JSON(500, map[string]interface{}{"massage": "Invalid request body"})
+	}
+	log.Println(fields)
+	users, _ := userModelHelper.UpdateUser(id, fields)
+	return ctx.JSON(200, map[string]interface{}{"massage": "Update user success", "user": users})
+}
+
+func UpdateMultiple(ctx echo.Context) error {
+	userModelHelper := userModel.UserModelHelper{DB: database.DBMYSQL}
+	data := []userModel.User{}
+
+	err := ctx.Bind(&data)
+	if err != nil {
+		return ctx.JSON(500, map[string]interface{}{"massage": "Invalid request body"})
+	}
+	fields := []*userModel.User{}
+	for _, item := range data {
+		fields = append(fields, &item)
+	}
+	result, _ := userModelHelper.UpdateUserArray(fields)
+	return ctx.JSON(200, map[string]interface{}{"massage": "Request pass", "result": result})
+}
+
+//!SECTION - Update
 
 // SECTION - Delete
 // NOTE - Soft deletes
@@ -84,4 +146,17 @@ func DeleteUser(ctx echo.Context) error {
 	return ctx.JSON(200, map[string]string{"massage": "Deleted successfully", "id": Id})
 }
 
-//!SECTION
+func DeleteMultipleUsers(ctx echo.Context) error {
+	userModelHelper := userModel.UserModelHelper{DB: database.DBMYSQL}
+	ids := []userModel.UserId{}
+
+	err := ctx.Bind(&ids)
+	if err != nil {
+		return ctx.JSON(500, map[string]interface{}{"massage": "Invalid request body"})
+	}
+	log.Print(ids)
+	result := userModelHelper.SoftArrayDelete(ids)
+	return ctx.JSON(200, map[string]interface{}{"massage": "Request pass", "result": result})
+}
+
+//!SECTION - Delete

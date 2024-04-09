@@ -21,6 +21,10 @@ type UserUpdate struct {
 	DeletedAt *time.Time `json:"deleted_at" gorm:"column:deleted_at"`
 }
 
+type UserId struct {
+	Id string `json:"id"`
+}
+
 func (User) TableName() string {
 	return "user"
 }
