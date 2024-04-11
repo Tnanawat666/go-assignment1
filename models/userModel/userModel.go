@@ -21,6 +21,15 @@ type UserUpdate struct {
 	DeletedAt *time.Time `json:"deleted_at" gorm:"column:deleted_at"`
 }
 
+type UserProductOder struct {
+	Id          string     `json:"id" gorm:"id"`
+	Firstname   string     `json:"firstname" gorm:"firstname"`
+	Productname string     `json:"productname" gorm:"productname"`
+	Quantity    int        `json:"quantity" gorm:"quantity"`
+	Orderid     int        `json:"orderid" gorm:"orderid"`
+	OderDate    *time.Time `json:"oder_date" gorm:"oder_date"`
+}
+
 type UserId struct {
 	Id string `json:"id"`
 }

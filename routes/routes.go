@@ -15,6 +15,7 @@ func InitRoute(e *echo.Echo) {
 
 	// Read
 	e.GET("/users", controllers.GetUsersPaginated)
+	e.GET("/users/products/order", controllers.GetUserProductOrder)
 
 	// Update
 	e.PUT("/user/:id", controllers.UpdateById)

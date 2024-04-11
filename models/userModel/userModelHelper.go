@@ -87,6 +87,17 @@ func (u *UserModelHelper) GetAllUsersPaginated(p *helper.Pagination, f *helper.F
 	return users, nil
 }
 
+// SECTION - RAW SQL
+func (u *UserModelHelper) GetUserProductOrder() ([]UserProductOder, error) {
+	result := []UserProductOder{}
+	db := u.DB.Raw("SELECT u.id AS userid, u.firstname, p.name as productname, po.quantity, o.id as orderid, o.order_date FROM intern.user AS u INNER JOIN intern.order AS o ON u.id = o.user_id left join (intern.product as p left join intern.product_order as po on p.id = po.product_id) on o.id = po.order_id").Scan(&result)
+	if db.Error != nil {
+		log.Fatalln("Error", db.Error)
+		return []UserProductOder{}, db.Error
+	}
+	return result, nil
+}
+
 //!SECTION - Read
 
 // SECTION - Update

@@ -99,6 +99,17 @@ func GetUsersPaginated(ctx echo.Context) error {
 	return ctx.JSON(200, map[string]interface{}{"data": users, "pagination": pagination, "message": "success"})
 }
 
+func GetUserProductOrder(ctx echo.Context) error {
+	userModelHelper := userModel.UserModelHelper{DB: database.DBMYSQL}
+	results, err := userModelHelper.GetUserProductOrder()
+	if err != nil {
+		log.Println("Error get user: ", err)
+		return ctx.JSON(500, map[string]string{"message": "Database Error"})
+	}
+	return ctx.JSON(200, map[string]interface{}{"data": results, "message": "success"})
+
+}
+
 //!SECTION - Read
 
 // SECTION - Update
