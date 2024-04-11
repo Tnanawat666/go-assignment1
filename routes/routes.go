@@ -8,10 +8,12 @@ import (
 
 func InitRoute(e *echo.Echo) {
 	e.GET("/", controllers.HomeController)
+	e.POST("/company/create/table", controllers.CreateCompanyTable)
 
 	// Create
 	e.POST("/user/create", controllers.CreateUser)
 	e.POST("/users/create", controllers.CreateMultipleUsers)
+	e.POST("/companies/create", controllers.CreateCompany)
 
 	// Read
 	e.GET("/users", controllers.GetUsersPaginated)
@@ -25,5 +27,5 @@ func InitRoute(e *echo.Echo) {
 	// Delete
 	e.DELETE("/user/:id", controllers.DeleteUser)
 
-	e.POST("/users", controllers.DeleteMultipleUsers)
+	e.POST("/users/delete", controllers.DeleteMultipleUsers)
 }

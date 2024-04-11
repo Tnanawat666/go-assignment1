@@ -16,7 +16,7 @@ func main() {
 	configs.Init()
 	database.Init()
 	routes.InitRoute(e)
-
+	
 	// * Start server
 	e.Logger.Fatal(e.Start(":1323"))
 }

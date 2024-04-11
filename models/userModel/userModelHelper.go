@@ -1,11 +1,10 @@
 package userModel
 
 import (
+	"assignment1/helper"
 	"log"
 	"math"
 	"time"
-
-	"assignment1/helper"
 
 	"gorm.io/gorm"
 )

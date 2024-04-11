@@ -34,6 +34,12 @@ type UserId struct {
 	Id string `json:"id"`
 }
 
+type UserAuth struct {
+	Email    string `json:"email" gorm:"email"`
+	Password string `json:"password"`
+	IsAdmin  bool   `json:"is_admin" gorm:"is_admin"`
+}
+
 func (User) TableName() string {
 	return "user"
 }
