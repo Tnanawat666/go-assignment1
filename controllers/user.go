@@ -12,6 +12,14 @@ import (
 
 // SECTION - Create
 // NOTE - Create a single user
+// @Tags User
+// @Summary Create User
+// @Description ทดสอบสร้าง User
+// @Param Request body userModel.User.Body Param true "JSON Body"
+// @Accept json
+// @Produce json
+// @response 200 {object} helper.SuccessResponse "HTTP Code 200, สร้างสำเร็จ"
+// @Router /user/create [post]
 func CreateUser(ctx echo.Context) error {
 	userModelHelper := userModel.UserModelHelper{DB: database.DBMYSQL}
 	now := time.Now()
@@ -31,6 +39,14 @@ func CreateUser(ctx echo.Context) error {
 }
 
 // NOTE - Create a multiple user
+// @Tags User
+// @Summary Create Multiple Users
+// @Description ทดสอบสร้าง User แบบหลายคนพร้อมกัน
+// @Param Request body []userModel.User.Body Param true "JSON Body"
+// @Accept json
+// @Produce json
+// @response 200 {object} helper.SuccessResponse "HTTP Code 200, สร้างสำเร็จ"
+// @Router /users/create [post]
 func CreateMultipleUsers(ctx echo.Context) error {
 	userModelHelper := userModel.UserModelHelper{DB: database.DBMYSQL}
 	now := time.Now()
@@ -71,6 +87,18 @@ func CreateMultipleUsers(ctx echo.Context) error {
 // }
 
 // NOTE -  Fetch user ทั้งหมด แล้วทำ Pagination เลย
+// @Tags User
+// @Summary Get User
+// @Description ทดสอบ get
+// @Param page query int false "Page ที่"
+// @Param row query int false "Limit ที่"
+// @Param sort query string false "Sort ex: firstname desc"
+// @Param firstname query string false "ต้องการหาชื่ออะไร"
+// @Param lastname query string false "นามสกุลที่ต้องการหา"
+// @Accept json
+// @Produce json
+// @response 200 {object} helper.SuccessResponse "HTTP Code 200, สร้างสำเร็จ"
+// @Router /users [get]
 func GetUsersPaginated(ctx echo.Context) error {
 	userModelHelper := userModel.UserModelHelper{DB: database.DBMYSQL}
 	pagination := &helper.Pagination{
@@ -99,6 +127,13 @@ func GetUsersPaginated(ctx echo.Context) error {
 	return ctx.JSON(200, map[string]interface{}{"data": users, "pagination": pagination, "message": "success"})
 }
 
+// @Tags User
+// @Summary Get User Order Detail
+// @Description ทดสอบ get user order detail
+// @Accept json
+// @Produce json
+// @response 200 {object} helper.SuccessResponse "HTTP Code 200, สร้างสำเร็จ"
+// @Router /users/products/order [get]
 func GetUserProductOrder(ctx echo.Context) error {
 	userModelHelper := userModel.UserModelHelper{DB: database.DBMYSQL}
 	results, err := userModelHelper.GetUserProductOrder()
@@ -113,11 +148,25 @@ func GetUserProductOrder(ctx echo.Context) error {
 //!SECTION - Read
 
 // SECTION - Update
+// @Tags User
+// @Summary Update User By Id
+// @Description ทดสอบ Update User ด้วย Id
+// @Param Request body userModel.UserUpdate.Body Param true "JSON Body"
+// @Param id path string true "ID ของผู้ใช้"
+// @Accept json
+// @Produce json
+// @response 200 {object} helper.SuccessResponse "HTTP Code 200, สร้างสำเร็จ"
+// @response 4010 {object} helper.UnAuthorizeResponse "HTTP Code 200, ไม่มีการ Authorization "
+// @response 4040 {object} helper.NotFoundResponse "HTTP Code 200, ไม่พบข้อมูล"
+// @response 5000 {object} helper.InternalServerErrorResponse "HTTP Code 500, ข้อผิดพลาดภายในเซิร์ฟเวอร์"
+// @Router /user/{id} [put]
 func UpdateById(ctx echo.Context) error {
 	userModelHelper := userModel.UserModelHelper{DB: database.DBMYSQL}
+	now := time.Now()
 	id := ctx.Param("id")
 	fields := userModel.UserUpdate{}
-	err := ctx.Bind(&fields)
+	err := ctx.Bind(&fields.Age)
+	fields.UpdatedAt = &now
 	if err != nil {
 		return ctx.JSON(500, map[string]interface{}{"massage": "Invalid request body"})
 	}
@@ -126,6 +175,18 @@ func UpdateById(ctx echo.Context) error {
 	return ctx.JSON(200, map[string]interface{}{"massage": "Update user success", "user": users})
 }
 
+// SECTION - Update
+// @Tags User
+// @Summary Update Multiple User
+// @Description ทดสอบ Update User หลายคนพร้อมกัน
+// @Param Request body []userModel.User.Body Param true "JSON Body"
+// @Accept json
+// @Produce json
+// @response 200 {object} helper.SuccessResponse "HTTP Code 200, สร้างสำเร็จ"
+// @response 4010 {object} helper.UnAuthorizeResponse "HTTP Code 200, ไม่มีการ Authorization "
+// @response 4040 {object} helper.NotFoundResponse "HTTP Code 200, ไม่พบข้อมูล"
+// @response 5000 {object} helper.InternalServerErrorResponse "HTTP Code 500, ข้อผิดพลาดภายในเซิร์ฟเวอร์"
+// @Router /users [put]
 func UpdateMultiple(ctx echo.Context) error {
 	userModelHelper := userModel.UserModelHelper{DB: database.DBMYSQL}
 	data := []userModel.User{}
@@ -146,6 +207,17 @@ func UpdateMultiple(ctx echo.Context) error {
 
 // SECTION - Delete
 // NOTE - Soft deletes
+// @Tags User
+// @Summary Soft Delete
+// @Description ทดสอบ Delete User ด้วย Id
+// @Param id path string true "ID ของผู้ใช้"
+// @Accept json
+// @Produce json
+// @response 200 {object} helper.SuccessResponse "HTTP Code 200, สร้างสำเร็จ"
+// @response 4010 {object} helper.UnAuthorizeResponse "HTTP Code 200, ไม่มีการ Authorization "
+// @response 4040 {object} helper.NotFoundResponse "HTTP Code 200, ไม่พบข้อมูล"
+// @response 5000 {object} helper.InternalServerErrorResponse "HTTP Code 500, ข้อผิดพลาดภายในเซิร์ฟเวอร์"
+// @Router /users/{id} [delete]
 func DeleteUser(ctx echo.Context) error {
 	userModelHelper := userModel.UserModelHelper{DB: database.DBMYSQL}
 	Id := ctx.Param("id")
@@ -157,6 +229,17 @@ func DeleteUser(ctx echo.Context) error {
 	return ctx.JSON(200, map[string]string{"massage": "Deleted successfully", "id": Id})
 }
 
+// @Tags User
+// @Summary Soft Delete Multiple Users
+// @Description ทดสอบ Delete User หลายคนพร้อมกัน
+// @Param Request body []userModel.User.Body Param true "JSON Body"
+// @Accept json
+// @Produce json
+// @response 200 {object} helper.SuccessResponse "HTTP Code 200, สร้างสำเร็จ"
+// @response 4010 {object} helper.UnAuthorizeResponse "HTTP Code 200, ไม่มีการ Authorization "
+// @response 4040 {object} helper.NotFoundResponse "HTTP Code 200, ไม่พบข้อมูล"
+// @response 5000 {object} helper.InternalServerErrorResponse "HTTP Code 500, ข้อผิดพลาดภายในเซิร์ฟเวอร์"
+// @Router /users/delete [delete]
 func DeleteMultipleUsers(ctx echo.Context) error {
 	userModelHelper := userModel.UserModelHelper{DB: database.DBMYSQL}
 	ids := []userModel.UserId{}

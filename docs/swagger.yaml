@@ -1,0 +1,325 @@
+basePath: /
+definitions:
+  helper.InternalServerErrorResponse:
+    properties:
+      code:
+        example: 5000
+        type: integer
+      message:
+        example: INTERNAL SERVER ERROR
+        type: string
+    type: object
+  helper.NotFoundResponse:
+    properties:
+      code:
+        example: 4040
+        type: integer
+      message:
+        example: NOT FOUND
+        type: string
+    type: object
+  helper.SuccessResponse:
+    properties:
+      code:
+        description: Response Code
+        example: 2000
+        type: integer
+      message:
+        description: Response Status
+        example: OK
+        type: string
+    type: object
+  helper.UnAuthorizeResponse:
+    properties:
+      code:
+        example: 4010
+        type: integer
+      message:
+        example: UNAUTHORIZED
+        type: string
+    type: object
+  userModel.User:
+    properties:
+      age:
+        type: integer
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      firstname:
+        type: string
+      id:
+        type: string
+      lastname:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  userModel.UserUpdate:
+    properties:
+      age:
+        type: integer
+      firstname:
+        type: string
+      lastname:
+        type: string
+      updated_at:
+        type: string
+    type: object
+host: localhost:1323
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This is a sample server assignment 1 Internships.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Assignment 1
+  version: "1.0"
+paths:
+  /user/{id}:
+    put:
+      consumes:
+      - application/json
+      description: ทดสอบ Update User ด้วย Id
+      parameters:
+      - description: JSON Body
+        in: body
+        name: Request
+        required: true
+        schema:
+          $ref: '#/definitions/userModel.UserUpdate'
+      - description: ID ของผู้ใช้
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: HTTP Code 200, สร้างสำเร็จ
+          schema:
+            $ref: '#/definitions/helper.SuccessResponse'
+        "4010":
+          description: 'HTTP Code 200, ไม่มีการ Authorization '
+          schema:
+            $ref: '#/definitions/helper.UnAuthorizeResponse'
+        "4040":
+          description: HTTP Code 200, ไม่พบข้อมูล
+          schema:
+            $ref: '#/definitions/helper.NotFoundResponse'
+        "5000":
+          description: HTTP Code 500, ข้อผิดพลาดภายในเซิร์ฟเวอร์
+          schema:
+            $ref: '#/definitions/helper.InternalServerErrorResponse'
+      summary: Update User By Id
+      tags:
+      - User
+  /user/create:
+    post:
+      consumes:
+      - application/json
+      description: ทดสอบสร้าง User
+      parameters:
+      - description: JSON Body
+        in: body
+        name: Request
+        required: true
+        schema:
+          $ref: '#/definitions/userModel.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: HTTP Code 200, สร้างสำเร็จ
+          schema:
+            $ref: '#/definitions/helper.SuccessResponse'
+      summary: Create User
+      tags:
+      - User
+  /users:
+    get:
+      consumes:
+      - application/json
+      description: ทดสอบ get
+      parameters:
+      - description: Page ที่
+        in: query
+        name: page
+        type: integer
+      - description: Limit ที่
+        in: query
+        name: row
+        type: integer
+      - description: 'Sort ex: firstname desc'
+        in: query
+        name: sort
+        type: string
+      - description: ต้องการหาชื่ออะไร
+        in: query
+        name: firstname
+        type: string
+      - description: นามสกุลที่ต้องการหา
+        in: query
+        name: lastname
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: HTTP Code 200, สร้างสำเร็จ
+          schema:
+            $ref: '#/definitions/helper.SuccessResponse'
+      summary: Get User
+      tags:
+      - User
+    put:
+      consumes:
+      - application/json
+      description: ทดสอบ Update User หลายคนพร้อมกัน
+      parameters:
+      - description: JSON Body
+        in: body
+        name: Request
+        required: true
+        schema:
+          items:
+            $ref: '#/definitions/userModel.User'
+          type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: HTTP Code 200, สร้างสำเร็จ
+          schema:
+            $ref: '#/definitions/helper.SuccessResponse'
+        "4010":
+          description: 'HTTP Code 200, ไม่มีการ Authorization '
+          schema:
+            $ref: '#/definitions/helper.UnAuthorizeResponse'
+        "4040":
+          description: HTTP Code 200, ไม่พบข้อมูล
+          schema:
+            $ref: '#/definitions/helper.NotFoundResponse'
+        "5000":
+          description: HTTP Code 500, ข้อผิดพลาดภายในเซิร์ฟเวอร์
+          schema:
+            $ref: '#/definitions/helper.InternalServerErrorResponse'
+      summary: Update Multiple User
+      tags:
+      - User
+  /users/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: ทดสอบ Delete User ด้วย Id
+      parameters:
+      - description: ID ของผู้ใช้
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: HTTP Code 200, สร้างสำเร็จ
+          schema:
+            $ref: '#/definitions/helper.SuccessResponse'
+        "4010":
+          description: 'HTTP Code 200, ไม่มีการ Authorization '
+          schema:
+            $ref: '#/definitions/helper.UnAuthorizeResponse'
+        "4040":
+          description: HTTP Code 200, ไม่พบข้อมูล
+          schema:
+            $ref: '#/definitions/helper.NotFoundResponse'
+        "5000":
+          description: HTTP Code 500, ข้อผิดพลาดภายในเซิร์ฟเวอร์
+          schema:
+            $ref: '#/definitions/helper.InternalServerErrorResponse'
+      summary: Soft Delete
+      tags:
+      - User
+  /users/create:
+    post:
+      consumes:
+      - application/json
+      description: ทดสอบสร้าง User แบบหลายคนพร้อมกัน
+      parameters:
+      - description: JSON Body
+        in: body
+        name: Request
+        required: true
+        schema:
+          items:
+            $ref: '#/definitions/userModel.User'
+          type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: HTTP Code 200, สร้างสำเร็จ
+          schema:
+            $ref: '#/definitions/helper.SuccessResponse'
+      summary: Create Multiple Users
+      tags:
+      - User
+  /users/delete:
+    delete:
+      consumes:
+      - application/json
+      description: ทดสอบ Delete User หลายคนพร้อมกัน
+      parameters:
+      - description: JSON Body
+        in: body
+        name: Request
+        required: true
+        schema:
+          items:
+            $ref: '#/definitions/userModel.User'
+          type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: HTTP Code 200, สร้างสำเร็จ
+          schema:
+            $ref: '#/definitions/helper.SuccessResponse'
+        "4010":
+          description: 'HTTP Code 200, ไม่มีการ Authorization '
+          schema:
+            $ref: '#/definitions/helper.UnAuthorizeResponse'
+        "4040":
+          description: HTTP Code 200, ไม่พบข้อมูล
+          schema:
+            $ref: '#/definitions/helper.NotFoundResponse'
+        "5000":
+          description: HTTP Code 500, ข้อผิดพลาดภายในเซิร์ฟเวอร์
+          schema:
+            $ref: '#/definitions/helper.InternalServerErrorResponse'
+      summary: Soft Delete Multiple Users
+      tags:
+      - User
+  /users/products/order:
+    get:
+      consumes:
+      - application/json
+      description: ทดสอบ get user order detail
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: HTTP Code 200, สร้างสำเร็จ
+          schema:
+            $ref: '#/definitions/helper.SuccessResponse'
+      summary: Get User Order Detail
+      tags:
+      - User
+schemes:
+- http
+swagger: "2.0"

@@ -13,12 +13,10 @@ type User struct {
 }
 
 type UserUpdate struct {
-	Id        string     `json:"id" gorm:"id"`
 	Firstname string     `json:"firstname" gorm:"column:firstname"`
 	Lastname  string     `json:"lastname" gorm:"column:lastname"`
 	Age       int        `json:"age" gorm:"column:age"`
 	UpdatedAt *time.Time `json:"updated_at" gorm:"column:updated_at"`
-	DeletedAt *time.Time `json:"deleted_at" gorm:"column:deleted_at"`
 }
 
 type UserProductOder struct {

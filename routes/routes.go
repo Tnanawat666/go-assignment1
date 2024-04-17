@@ -27,5 +27,5 @@ func InitRoute(e *echo.Echo) {
 	// Delete
 	e.DELETE("/user/:id", controllers.DeleteUser)
 
-	e.POST("/users/delete", controllers.DeleteMultipleUsers)
+	e.DELETE("/users/delete", controllers.DeleteMultipleUsers)
 }
