@@ -165,13 +165,20 @@ func UpdateById(ctx echo.Context) error {
 	now := time.Now()
 	id := ctx.Param("id")
 	fields := userModel.UserUpdate{}
-	err := ctx.Bind(&fields.Age)
-	fields.UpdatedAt = &now
+	err := ctx.Bind(&fields)
+	user := userModel.User{
+		Id:        id,
+		Firstname: fields.Firstname,
+		Lastname:  fields.Lastname,
+		Age:       fields.Age,
+		UpdatedAt: &now,
+		Status:    fields.Status,
+	}
 	if err != nil {
 		return ctx.JSON(500, map[string]interface{}{"massage": "Invalid request body"})
 	}
 	log.Println(fields)
-	users, _ := userModelHelper.UpdateUser(id, fields)
+	users, _ := userModelHelper.UpdateUser(id, user)
 	return ctx.JSON(200, map[string]interface{}{"massage": "Update user success", "user": users})
 }
 
@@ -189,15 +196,24 @@ func UpdateById(ctx echo.Context) error {
 // @Router /users [put]
 func UpdateMultiple(ctx echo.Context) error {
 	userModelHelper := userModel.UserModelHelper{DB: database.DBMYSQL}
-	data := []userModel.User{}
-
+	data := []userModel.UserMultiUpdate{}
+	now := time.Now()
 	err := ctx.Bind(&data)
 	if err != nil {
 		return ctx.JSON(500, map[string]interface{}{"massage": "Invalid request body"})
 	}
 	fields := []*userModel.User{}
 	for _, item := range data {
-		fields = append(fields, &item)
+		user := userModel.User{
+			Id:        item.Id,
+			Firstname: item.Firstname,
+			Lastname:  item.Lastname,
+			Age:       item.Age,
+			UpdatedAt: &now,
+			DeletedAt: nil,
+			Status:    item.Status,
+		}
+		fields = append(fields, &user)
 	}
 	result, _ := userModelHelper.UpdateUserArray(fields)
 	return ctx.JSON(200, map[string]interface{}{"massage": "Request pass", "result": result})

@@ -467,6 +467,9 @@ const docTemplate = `{
                 "lastname": {
                     "type": "string"
                 },
+                "status": {
+                    "type": "string"
+                },
                 "updated_at": {
                     "type": "string"
                 }
@@ -484,7 +487,7 @@ const docTemplate = `{
                 "lastname": {
                     "type": "string"
                 },
-                "updated_at": {
+                "status": {
                     "type": "string"
                 }
             }

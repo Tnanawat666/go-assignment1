@@ -102,7 +102,7 @@ func (u *UserModelHelper) GetUserProductOrder() ([]UserProductOder, error) {
 // SECTION - Update
 // FIXME - ต้องเปลี่ยนเพราะ ทำจริงๆจะต้องเอามาแค่ไอดี แล้วแสดงผลไปเลยว่า fields ไหนเป็นอะไร แล้วเขียนทับเพื่อไม่ให้เป็น Null
 // TODO - Toggle ข้อมูลใน database เช่น active to inactive
-func (u *UserModelHelper) UpdateUser(user_id string, fields UserUpdate) (id string, err error) {
+func (u *UserModelHelper) UpdateUser(user_id string, fields User) (id string, err error) {
 	tx := u.DB.Begin()
 	result := tx.Where("id =?", user_id).Updates(fields)
 	if result.Error != nil {
