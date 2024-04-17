@@ -21,7 +21,7 @@ type UserUpdate struct {
 }
 
 type UserMultiUpdate struct {
-	Id        string `json:"id gorm:"column:id"`
+	Id        string `json:"id" gorm:"id"`
 	Firstname string `json:"firstname" gorm:"column:firstname"`
 	Lastname  string `json:"lastname" gorm:"column:lastname"`
 	Age       int    `json:"age" gorm:"column:age"`
